@@ -19,9 +19,18 @@ class JiraConfig:
     max_retries: int = 3
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
 
+@dataclass
+class ConfluenceConfig:
+    url: Optional[str] = os.getenv("CONFLUENCE_URL")           # Same as JIRA_URL usually
+    email: Optional[str] = os.getenv("CONFLUENCE_EMAIL")       # Same as JIRA_EMAIL usually
+    api_token: Optional[str] = os.getenv("CONFLUENCE_API_TOKEN") # Same token as Jira
+    timeout: float = 30.0
+    max_retries: int = 3
+    log_level: str = os.getenv("LOG_LEVEL", "INFO")
+
 class Config:
     weather = WeatherConfig()
     jira = JiraConfig()
+    confluence = ConfluenceConfig()
 
 config = Config()
-

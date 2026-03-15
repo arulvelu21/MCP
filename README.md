@@ -73,8 +73,11 @@ MCP/
 ## Setup
 
 ### 1. Clone & Create Virtual Environment
+
+> ⚠️ **Python 3.13 required** — Python 3.14 is **not compatible** with `streamlit` / `protobuf`. Use Python 3.13 explicitly:
+
 ```bash
-python -m venv .venv
+python3.13 -m venv .venv
 source .venv/bin/activate
 ```
 
@@ -136,7 +139,22 @@ open ~/Library/Application\ Support/Claude/
       "command": "/path/to/MCP/.venv/bin/python3",
       "args": ["-m", "servers.weather"],
       "cwd": "/path/to/MCP",
-      "env": { "PYTHONPATH": "/path/to/MCP" }
+      "env": {
+        "PYTHONPATH": "/path/to/MCP",
+        "JIRA_URL": "https://your-domain.atlassian.net",
+        "JIRA_EMAIL": "your-email@example.com",
+        "JIRA_API_TOKEN": "your-token",
+        "CONFLUENCE_URL": "https://your-domain.atlassian.net",
+        "CONFLUENCE_EMAIL": "your-email@example.com",
+        "CONFLUENCE_API_TOKEN": "your-token",
+        "ZENDESK_URL": "https://your-company.zendesk.com",
+        "ZENDESK_EMAIL": "your-email@example.com",
+        "ZENDESK_API_TOKEN": "your-token",
+        "AZURE_OPENAI_API_KEY": "your-key",
+        "AZURE_OPENAI_ENDPOINT": "https://xxx.cognitiveservices.azure.com/",
+        "AZURE_OPENAI_DEPLOYMENT_NAME": "gpt-4o",
+        "AZURE_OPENAI_API_VERSION": "2025-01-01-preview"
+      }
     },
     "jira": {
       "command": "/path/to/MCP/.venv/bin/python3",
@@ -159,7 +177,7 @@ open ~/Library/Application\ Support/Claude/
   }
 }
 ```
-> Replace `/path/to/MCP` with your actual project path, e.g. `/Users/yourname/Desktop/Arul Learning /MCP`
+> ⚠️ **Important:** Claude Desktop does **not** inherit shell environment variables. You must add all credentials directly into the `env` block of each server entry (or at minimum the server that needs them). Replace `/path/to/MCP` with your actual project path, e.g. `/Users/yourname/Desktop/Arul Learning /MCP`
 
 ### Step 3: Restart Claude Desktop
 ```
@@ -318,3 +336,7 @@ tail -f ~/Library/Logs/Claude/mcp-server-zendesk.log
 | Azure OpenAI 404 error | Check `AZURE_OPENAI_ENDPOINT` is base URL only (no `/openai/deployments/...`) |
 | Azure OpenAI 401 error | Check `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_DEPLOYMENT_NAME` in `.env` |
 | Streamlit event loop error | Agent uses background threading — no `asyncio` changes needed |
+| **Streamlit fails to start (protobuf error)** | **Python 3.14 is incompatible — recreate venv with Python 3.13:** `rm -rf .venv && python3.13 -m venv .venv && pip install -r requirements.txt` |
+| **Claude Desktop: "No such file or directory"** | **Claude Desktop doesn't inherit shell env vars — add all credentials directly into the `env` block of each server in `claude_desktop_config.json`** |
+| **SSE port already in use (Errno 48)** | Old server still running — kill it: `lsof -ti :8001 \| xargs kill -9` (replace port as needed) |
+| **Zendesk ticket_id validation error** | Fixed — `get_ticket` and `get_ticket_comments` now accept both `int` and `str` |

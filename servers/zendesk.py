@@ -150,12 +150,13 @@ async def get_tickets(status: str = "open", max_results: int = 10) -> str:
 
 
 @mcp.tool()
-async def get_ticket(ticket_id: str) -> str:
+async def get_ticket(ticket_id: int | str) -> str:
     """Get details of a specific Zendesk ticket.
 
     Args:
         ticket_id: The ticket ID number (e.g., 123)
     """
+    ticket_id = str(ticket_id)
     logging.info(f"MCP TOOL CALLED -> get_ticket({ticket_id})")
 
     if not ticket_id:
@@ -398,12 +399,13 @@ async def search_tickets(query: str, max_results: int = 10) -> str:
 
 
 @mcp.tool()
-async def get_ticket_comments(ticket_id: str) -> str:
+async def get_ticket_comments(ticket_id: int | str) -> str:
     """Get all comments for a Zendesk ticket.
 
     Args:
         ticket_id: The ticket ID
     """
+    ticket_id = str(ticket_id)
     logging.info(f"MCP TOOL CALLED -> get_ticket_comments({ticket_id})")
 
     if not ticket_id:

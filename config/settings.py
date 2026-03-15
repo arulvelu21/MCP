@@ -1,6 +1,10 @@
 import os
 from dataclasses import dataclass
 from typing import Optional
+from dotenv import load_dotenv
+
+# Load .env BEFORE dataclass defaults are evaluated
+load_dotenv()
 
 @dataclass
 class WeatherConfig:
@@ -38,10 +42,18 @@ class ZendeskConfig:
     max_retries: int = 3
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
 
+@dataclass
+class AzureOpenAIConfig:
+    api_key: Optional[str]         = os.getenv("AZURE_OPENAI_API_KEY")
+    endpoint: Optional[str]        = os.getenv("AZURE_OPENAI_ENDPOINT")        # e.g. https://<your-resource>.openai.azure.com/
+    deployment_name: Optional[str] = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME") # e.g. gpt-4o
+    api_version: str               = os.getenv("AZURE_OPENAI_API_VERSION", "2024-08-01-preview")
+
 class Config:
     weather = WeatherConfig()
     jira = JiraConfig()
     confluence = ConfluenceConfig()
     zendesk = ZendeskConfig()
+    azure_openai = AzureOpenAIConfig()
 
 config = Config()
